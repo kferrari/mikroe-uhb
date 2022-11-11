@@ -1,6 +1,6 @@
 import struct, logging
-from util import hexlify, maketrans, bord
-from device import Device, Command, HID_buf_size
+from .util import hexlify, maketrans, bord
+from .device import Device, Command, HID_buf_size
 logger = logging.getLogger(__name__)
 
 def encode_instruction(template, field=None, endianness='<'):
@@ -23,7 +23,7 @@ def encode_instruction(template, field=None, endianness='<'):
     if max_c != 0:
         if field == None:
             raise ValueError('supplied template requires a field')
-        orig = ''.join([chr(a+i) for i in xrange(max_c)])
+        orig = ''.join([chr(a+i) for i in range(max_c)])
         field = bin(field)[2:].rjust(max_c, '0')
         template = template.translate(maketrans(orig, field))
     instruction = int(template, 2)
@@ -75,7 +75,7 @@ class DevKitModel:
         address range_start to range_end."""
         assert((range_end - range_start) % self.EraseBlock == 0)
         self.blockaddr += [(addr, addr + self.EraseBlock) for addr in
-                           xrange(range_start, range_end, self.EraseBlock)]
+                           range(range_start, range_end, self.EraseBlock)]
 
     def _lazy_block(self, blk):
         """Lazily initialize a bytearray for block number blk. Override this
@@ -188,10 +188,10 @@ class DevKitModel:
                                    end - start))
         dev.recv().expect(Command.ERASE)
         # Write each block blk
-        for blk in xrange(start, end):
+        for blk in range(start, end):
             blk_data = self.blocks[blk]
             # Split the Flash memory block into parts containing _write_max bytes.
-            for blk_off in xrange(0, len(blk_data), self._write_max):
+            for blk_off in range(0, len(blk_data), self._write_max):
                 data = blk_data[blk_off:blk_off+self._write_max]
                 # Inform the device we are starting to send data
                 address = self._write_addr(blk, blk_off)
@@ -200,7 +200,7 @@ class DevKitModel:
                 dev.send(Command.from_attr(Command.WRITE, address, len(data)))
                 dev_buf_rem = dev_buf_size
                 # Split into USB HID packets
-                for i in xrange(0, len(data), HID_buf_size):
+                for i in range(0, len(data), HID_buf_size):
                     pkt = data[i:i+HID_buf_size]
                     dev.send_data(pkt)
                     dev_buf_rem -= len(pkt)
@@ -295,7 +295,7 @@ class STM32DevKit(ARMDevKit):
         self.blockaddr = []
         start_addr = 0
         for number_of_blocks, block_size in block_list:
-            for i in xrange(number_of_blocks):
+            for i in range(number_of_blocks):
                 end_addr = start_addr + block_size
                 self.blockaddr.append((start_addr, end_addr))
                 start_addr = end_addr
@@ -360,7 +360,7 @@ class PIC24DevKit(DevKitModel):
         assert(len(data) % 4 == 0)
         newd = []
         # discard padding bytes (at every fourth byte)
-        for i in xrange(0, len(data), 4):
+        for i in range(0, len(data), 4):
             newd += list(data[i:i+3])
             padbyte = bord(data[i+3])
             if padbyte != 0:
@@ -543,7 +543,7 @@ _map = {}
 def factory(bootinfo):
     """Factory for constructing devkit objects from a bootinfo dictionary"""
     if len(_map) == 0:
-        for clsname, cls in globals().iteritems():
+        for clsname, cls in globals().items():
             if hasattr(cls, '_supported'):
                 for mcu in cls._supported:
                     # a mcu cannot be supported by two different classes

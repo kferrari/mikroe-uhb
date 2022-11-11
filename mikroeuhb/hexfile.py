@@ -1,6 +1,6 @@
 import struct, logging
 from binascii import unhexlify
-from util import bord
+from .util import bord
 logger = logging.getLogger(__name__)
 
 def load(f, devkit):
@@ -8,7 +8,7 @@ def load(f, devkit):
        The devkit must implement a write(address,data) method."""
     lineno = 0
     base_addr = 0
-    for line in f.xreadlines():
+    for line in f:
         lineno += 1
         line = line.strip()
         if line == '':

@@ -59,7 +59,7 @@ class STM32FullFlashBlock(unittest.TestCase):
         kit = devkit.factory(_stm32)
         memsize = _stm32['BootStart']
         randmem = bytearray(memsize)
-        for i in xrange(memsize):
+        for i in range(memsize):
             randmem[i] = random.randint(0, 255)
         kit.write(0x08000000, randmem)
         self.assertEqual(b''.join([bytes(kit.blocks[i]) for i,_ in enumerate(kit.blockaddr)]),
@@ -74,13 +74,13 @@ class STM32RandomWrites(unittest.TestCase):
         kit = devkit.factory(_stm32)
         memsize = _stm32['BootStart']
         randmem = bytearray(memsize)
-        for i in xrange(memsize):
+        for i in range(memsize):
             randmem[i] = 255
-        for i in xrange(self.blkcount):
+        for i in range(self.blkcount):
             size = random.randint(1, memsize)
             addr = random.randint(0, memsize - size)
             randblk = bytearray(size)
-            for j in xrange(size):
+            for j in range(size):
                 randblk[i] = random.randint(0, 255)
             randmem[addr:addr+size] = randblk
             kit.write(0x08000000 + addr, randblk)

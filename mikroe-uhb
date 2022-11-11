@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/local/bin/python
 import sys, getopt, logging
 from mikroeuhb.hid import open_dev
 from mikroeuhb.device import Device
@@ -24,7 +24,7 @@ def main():
         sys.exit(1)
         
     loglevel = logging.WARNING
-    vendor = 0x1234
+    vendor = 0x2DBC
     product = 0x0001
     disable_bootloader = False
     

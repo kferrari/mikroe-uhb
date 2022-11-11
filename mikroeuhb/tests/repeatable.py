@@ -7,7 +7,7 @@ class TestSuite(unittest.TestSuite):
     def __iter__(self):
         for test in self._tests:
             count = test.count if hasattr(test, 'count') else 1
-            for i in xrange(count):
+            for i in range(count):
                 yield test
 
 def make_load_tests(test_cases):
