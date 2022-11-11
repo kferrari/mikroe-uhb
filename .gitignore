@@ -1,0 +1,6 @@
+
+build/*
+.DS_Store
+dist/*
+mikroe_uhb.egg-info/*
+*.pyc

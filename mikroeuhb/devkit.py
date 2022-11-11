@@ -32,6 +32,28 @@ def encode_instruction(template, field=None, endianness='<'):
         instruction = instruction[:-1] if endianness == '<' else instruction[1:]
     return instruction
 
+# Print iterations progress
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+    """
+    Call in a loop to create terminal progress bar
+    @params:
+        iteration   - Required  : current iteration (Int)
+        total       - Required  : total iterations (Int)
+        prefix      - Optional  : prefix string (Str)
+        suffix      - Optional  : suffix string (Str)
+        decimals    - Optional  : positive number of decimals in percent complete (Int)
+        length      - Optional  : character length of bar (Int)
+        fill        - Optional  : bar fill character (Str)
+        printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
+    """
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+    # Print New Line on Complete
+    if iteration == total: 
+        print()
+        
 class DevKitModel:
     """Inherit from this class to implement support for new development kits.
        A devkit class models the device Flash memory blocks, and also specifies
@@ -180,6 +202,7 @@ class DevKitModel:
     def _blk_interval(self, dev, start, end):
         """Erase and write to the device the Flash memory block
            interval [start,end)."""
+        it = 0
         assert(isinstance(dev, Device))
         dev_buf_size = self.EraseBlock  # size of firmware's char[] fBuffer
         # Erase the Flash memory blocks
@@ -197,6 +220,8 @@ class DevKitModel:
                 address = self._write_addr(blk, blk_off)
                 logger.debug('WRITE %d bytes to address 0x%x' % (
                     len(data), address))
+                printProgressBar(it, len(range(start, end)), prefix = 'Progress:', suffix = 'Complete', length = 50)
+                it+=1
                 dev.send(Command.from_attr(Command.WRITE, address, len(data)))
                 dev_buf_rem = dev_buf_size
                 # Split into USB HID packets

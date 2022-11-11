@@ -31,7 +31,7 @@ This project was tested with a **MultiMedia Board for PIC32MX7** development kit
 How to install
 --------------
 
-### On Linux
+### On Linux & macOS
 
 First, you need to check if you have `python-setuptools` installed.
 Then, just run:
